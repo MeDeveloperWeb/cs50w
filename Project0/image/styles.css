@@ -1,0 +1,43 @@
+.ggimg{
+    display: flex;
+    justify-content: center;
+    padding-top: 25vh;
+}
+
+.cap_img{
+    position: absolute;
+    display:flex;
+    padding-top: 75px;
+    padding-left: 215px;
+    color:#4285f4;
+    font-family: Arial;/*https://qr.ae/pvHn0k*/
+}
+
+.gsch{
+    display: flex;
+    align-items:center;
+    border: 1px solid lightgrey;
+    border-radius:25px;
+    height: 35px;
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top:20px;
+    padding:5px
+}
+.sch{
+    margin-left: 12px;
+}
+
+input[type="text"]{
+    width: 80%;
+    height:90%;
+    border: none;/*https://www.codegrepper.com/code-examples/whatever/how+to+remove+border+from+input+text+onclick*/
+    outline:none;
+    margin: 10px;
+    font-size:16px;
+}
+
+input[type="image"] {
+    margin-left: 12px;
+    margin-bottom: 4px;
+}
