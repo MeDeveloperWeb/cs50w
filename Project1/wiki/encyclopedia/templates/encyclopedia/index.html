@@ -5,12 +5,20 @@
 {% endblock %}
 
 {% block body %}
-    <h1>All Pages</h1>
+    {% if entries %}
 
-    <ul>
-        {% for entry in entries %}
-            <li>{{ entry }}</li>
-        {% endfor %}
-    </ul>
+        <h1>{{ head }}</h1>
+
+        <ul>
+            
+                {% for entry in entries %}
+                    <li><a href="{% url 'entries' title=entry %}">{{ entry }}</a></li>
+                {% endfor %}
+            
+        </ul>
+
+    {% else %}
+        <h3>OOPS! No Matches found related to your query.</h3>
+    {% endif %}
 
 {% endblock %}
