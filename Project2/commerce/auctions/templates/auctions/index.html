@@ -1,7 +1,56 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
-
-    TODO
+        <main>
+            <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-light">
+              <div class="col-md-5 p-lg-5 mx-auto my-5">
+                <h1 class="display-4 fw-normal">Active Listings</h1>
+                <p class="lead fw-normal">We have all you need. Do you have good sense of pricing? Can you win the auctions? Let's find out.</p>
+                <form action="{% url 'index' %}" method="get" class="search">
+                  <input type="search" class="form-control rounded search-bar" placeholder="Search for items." aria-label="Search" aria-describedby="search-addon" name="q">
+                  <input type="submit" class="btn btn-outline-primary search-btn" value="Search">
+                </form>
+              </div>
+              <div class="product-device shadow-sm d-none d-md-block"></div>
+              <div class="product-device product-device-2 shadow-sm d-none d-md-block"></div>
+            </div>
+              {% for key, value in listings.items %}
+              {% if key == "search" %}
+                {% if value|length == 0 %}
+                    <span class="badge bg-danger">Sorry! No matches for your search query.<br></span>
+                {% else %}
+                <span class="badge bg-success">Results related to your query:<br></span>
+                {% endif %}
+              {% elif value|length != 0 and listings|length != 1 %}
+                  <span class="badge bg-success">Other items that you might like:<br></span>
+              {% endif %}
+                {% for each in value %}
+                {% if forloop.counter0|divisibleby:2 %}
+                <div class="d-md-flex flex-md-equal w-100 my-md-3 ps-md-3">
+                {% endif %}
+                  <div onclick="location.href = '{% url 'listing'  id=each.id %}'" class="listing me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden{% if forloop.counter0|divisibleby:2 %} bg-dark text-white{% else %} bg-light{% endif %}" {% if forloop.counter0|divisibleby:2 and forloop.last %} style="width:100vw;" {% endif %}> 
+                    <!-- https://stackoverflow.com/a/25195769 for pricetag -->
+                    <span class="pricetag">${{each.price}}</span>
+                    <div class="my-3 py-3 obj-title">
+                      <h2 class="display-5 title">{{each.title}}</h2>
+                      <p class="lead description">{{each.details}}</p>
+                    </div>
+                    {% if each.photo %}
+                    <div class="img-cont">
+                      <img src="{{each.photo}}" alt="objectimage" class="obj-img shadow-sm mx-auto {% if forloop.counter0|divisibleby:2 %} bg-light{% else %} bg-dark{% endif %}">
+                    </div>
+                    {% else %}
+                    <div class="obj-img shadow-sm mx-auto {% if forloop.counter0|divisibleby:2 %} bg-light{% else %} bg-dark{% endif %}" style="width: 80%; height: 300px;"></div>
+                    {% endif %}
+                  </div>
+                {% if forloop.counter|divisibleby:2 or forloop.last%}
+                </div>
+                {% endif %}
+                {% endfor %}
+              {%endfor%}
+            </div>
+          </main>
+        
+    
+    
 {% endblock %}

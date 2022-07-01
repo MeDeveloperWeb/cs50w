@@ -1,3 +1,166 @@
 body {
     padding: 10px;
+    font-family: serif;
+}
+.nav-end {
+    margin-left: auto;
+}
+.navbar-nav {
+    margin-left: 5vw;
+}
+.form-signin {
+    width: 100%;
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+    margin-top: 20vh;
+}
+
+@media (min-width: 768px)
+{
+    .listing {
+        width:50vw;
+    }
+}
+
+.obj-img {
+    width: 80%;
+    border-radius: 21px 21px 0 0;
+}
+
+.description {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+}
+.title{
+/*     https://stackoverflow.com/a/32585024 */
+    overflow: hidden;
+   text-overflow: ellipsis;
+   display: -webkit-box;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 2;
+   line-height: 1.5em;        
+   max-height: 3em; 
+}
+.search {
+    display: flex;
+}
+
+
+.obj-title{
+    height:150px;
+}
+
+/* pricetag: https://stackoverflow.com/a/25195769 */
+.pricetag{
+    white-space:nowrap;
+    margin:0 5px 0 10px;
+    display:inline-block;
+    height:26px;
+    border-radius: 0 5px 5px 0;
+    padding: 0 25px 0 15px;
+    background:lightgreen;
+    border: 1px solid #C7D2D4;
+    color:white;
+    line-height:23px;
+    position:relative;
+    margin-left:78%;
+}
+.pricetag:after{
+    position:absolute;
+    right:0;
+    margin:1px 7px;
+    font-weight:bold;
+    font-size:19px;
+}
+.pricetag:before{
+    position:absolute;
+    background:lightgreen;
+    content:"\25CF";
+    color:white;
+    text-shadow: 0 0 1px #aaa;
+    font-size:12px;
+    line-height:13px;
+    text-indent:6px;
+    top:3px;
+    left:-10px;
+    width: 18px;
+    height: 18px;
+    transform: rotate(45deg);
+    border-left:1px solid #C7D2D4;
+    border-bottom:1px solid #C7D2D4;
+}
+
+
+.pro-img{
+   height:60%;
+   max-height: 50vh;
+}
+
+@media screen and (max-width: 600px){
+    .pro-img{
+        width:80vw;
+        max-height:none;
+       min-width:200px;
+     }
+}
+
+
+.h4-title {
+    font-family: 'Courier New', Courier, monospace; 
+    font-weight: bolder;
+}
+.product-description{
+   min-width: fit-content;
+   min-width: -moz-fit-content;
+   min-width: -webkit-fill-available;
+}
+.pro-cont{
+   max-width:1000px;
+}
+
+
+.show-price {
+   font-weight: bolder;
+   font-size: xx-large;
+   color: red;
+}
+
+.comment-input {
+   width:100%;
+   border:none;
+   outline: none;
+   padding: 11px;
+   border-bottom: 2px solid lightgrey;
+}
+
+.comment-btn {
+   float: right;
+   border: none;
+   color: blue;
+   background-color: transparent;
+}
+
+.comment-btns {
+   display: none;
+}
+
+.heart {
+   border: none;
+   background-color:transparent;
+   font-size: 32px;
+}
+.bid-btn {
+   color: white;
+   outline:black;
+}
+
+#bid {
+   background-color: darkorange;
+}
+#wish {
+   background-color: darkturquoise;
 }

@@ -1,0 +1,73 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+<div class="super_container">
+    <div class="single_product">
+        <div class="container-fluid bg-light pro-cont border rounded" style=" background-color: #fff; padding: 11px;">
+            <div class="row mt-md-5">
+                
+                <div class="col text-center">
+                    {% if listing.photo %}
+                    <div class="image_selected"><img src="{{listing.photo}}" alt="" class="pro-img border border-success rounded"></div>
+                    {% endif %}
+                </div>
+                <div class="{% if not listing.photo %} col-lg-6 p-5 border border-success rounded{% else %} col-lg {% endif %} pro-des mt-lg-0 mt-5 text-left px-3 px-md-5">
+                    <div class="product_description">
+                        <div class="pro-title">
+                            <h4 class="h4-title">{{ listing.title }}</h4>
+                            <hr>
+                        </div>
+                        <div class="pro-details">
+                            <div class="likes-reviews mt-3">&#10084 2 likes and &#128172 {{comment|length}} comments.</div>
+                            <hr>
+                            <div class="starting-bid mt-5 small"><strong>Starting Bid: </strong>${{listing.price}}</div>
+                            <div class="current-bid small">
+                                <strong>Current-bid: </strong><span class="show-price">$79.90</span>
+                            </div>
+                            <hr>
+                            <div class="pro-des my-5"><strong class="h4">Description:</strong> {{listing.details}} </div>
+                            <div class="owner"><strong>Listed by:</strong> {{listing.owner_id}}</div>
+                        </div>
+                        <div class="btns">
+                            <button class="bid-btn" id="bid">Bid Now</button>
+                            <button class="bid-btn" id="wish">Add to watchlist</button>
+                            <button class="heart" type="button">&#9825</button>
+                            <button class="heart" type="button">&#10084</button> 
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                {% if not listing.photo %}
+                <div class="col text-center">
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="container-fluid bg-light pro-cont border rounded mt-5 comment-section" style=" background-color: #fff; padding: 11px;">
+            <div class="row mt-md-5 mx-3">
+                <div class="comment-count h4"> &#128172  {{comment|length}} Comments</div>
+                <hr>
+                <div class="comment-form">
+                    <form action="{% url 'listing' listing.id %}" method="post" autocomplete="off">
+                        <textarea placeholder="Add your Comment" class="comment-input" name="comment" onclick="document.getElementsByClassName('comment-btns')[0].style.display = 'block';"></textarea>
+                        {% csrf_token %}
+                        <div class="comment-btns">
+                            <input type="button" value="Cancel" class="comment-btn" onclick="document.getElementsByTagName('textarea')[0].value = ''; document.getElementsByClassName('comment-btns')[0].style.display = 'none';">
+                            <input type="submit" value="Comment" class="comment-btn">
+                        </div>
+                        
+                    </form>
+                    <div class="oth-comm">
+                        {% for each in comment %}
+                        <span class="user h6 row mt-3 mx-3">{{each.commentor_id}}: </span><span class="comment row mx-3">{{each.comment_txt}}</span>
+                        <hr>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
