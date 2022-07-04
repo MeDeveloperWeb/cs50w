@@ -19,7 +19,26 @@
                             <hr>
                         </div>
                         <div class="pro-details">
-                            <div class="likes-reviews mt-3">&#10084 2 likes and &#128172 {{comment|length}} comments.</div>
+                            <div class="likes-reviews mt-3 row">
+                                <form action="{% url 'listing' listing.id %}" class="liked col" method="post">
+                                {% csrf_token %}
+                                <button class="heart" type="submit" name="like"><span id="btntxt">
+                                {% for like in likes %}
+                                    {% if like.liked_by == user %}
+                                    <span>&#10084</span>
+                                    {% endif %}
+                                {% endfor %}
+                                    </span>
+                                </button>
+                                {{likes|length}} likes and &#128172 {{comment|length}} comments.
+                                <script async>
+                                    var el = document.getElementById('btntxt');
+                                    if (!el.children.length) {document.getElementById("btntxt").innerHTML += '<span>&#9825</span>';
+                                }
+                                </script>
+                                
+                                </form> 
+                              </div>
                             <hr>
                             <div class="starting-bid mt-5 small"><strong>Starting Bid: </strong>${{listing.price}}</div>
                             <div class="current-bid small">
@@ -30,10 +49,10 @@
                             <div class="owner"><strong>Listed by:</strong> {{listing.owner_id}}</div>
                         </div>
                         <div class="btns">
+                            
                             <button class="bid-btn" id="bid">Bid Now</button>
                             <button class="bid-btn" id="wish">Add to watchlist</button>
-                            <button class="heart" type="button">&#9825</button>
-                            <button class="heart" type="button">&#10084</button> 
+                             
                         </div>
                     </div>
                     
@@ -51,11 +70,11 @@
                 <hr>
                 <div class="comment-form">
                     <form action="{% url 'listing' listing.id %}" method="post" autocomplete="off">
-                        <textarea placeholder="Add your Comment" class="comment-input" name="comment" onclick="document.getElementsByClassName('comment-btns')[0].style.display = 'block';"></textarea>
+                        <textarea placeholder="Add your Comment" class="comment-input" name="comment_txt" onclick="document.getElementsByClassName('comment-btns')[0].style.display = 'block';"></textarea>
                         {% csrf_token %}
                         <div class="comment-btns">
                             <input type="button" value="Cancel" class="comment-btn" onclick="document.getElementsByTagName('textarea')[0].value = ''; document.getElementsByClassName('comment-btns')[0].style.display = 'none';">
-                            <input type="submit" value="Comment" class="comment-btn">
+                            <input type="submit" value="Comment" class="comment-btn" name="comment">
                         </div>
                         
                     </form>

@@ -50,7 +50,7 @@ class Comments(models.Model):
 
 class Like(models.Model):
     listing_id =  models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_obj")
-    liked_by = models.ForeignKey(User, on_delete=models.CASCADE, unique=True, related_name="lover")
+    liked_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="lover")
     
     def __str__(self):
         return f"{self.liked_by}"

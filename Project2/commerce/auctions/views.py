@@ -9,11 +9,12 @@ from django import forms
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
+from django.contrib import messages
 
 import auctions
 
 
-from .models import Comments, Listing, User
+from .models import Comments, Like, Listing, User
 
 
 class CreateListing(forms.ModelForm):
@@ -121,28 +122,51 @@ def create(request):
     
 
 def listing(request, id):
-    try:
-        listings = {"listing": Listing.objects.get(id=id)}
-    except Listing.DoesNotExist:
-        return index(request)
-
-    msg = ""
-
-    if request.method == 'POST':
-        if request.user.is_authenticated:
-            txt = request.POST["comment"]
-            if not txt:
-                msg =  "Comment cannot be empty."
+    
+    def comment():
+        txt = request.POST["comment_txt"]
+        if not txt:
+            messages.warning(request, "Comment can't be empty")
+        else:
             new_cmt = Comments()
             new_cmt.view_id = Listing.objects.get(id=id)
             new_cmt.commentor_id = request.user
             new_cmt.comment_txt = txt
             new_cmt.save()
-            return HttpResponseRedirect(reverse('listing', args=[id]))
+            messages.success(request, "Your Comment was added")
+        return HttpResponseRedirect(reverse('listing', args=[id]))
+
+    def like():
+        if 'like' in request.POST:
+            print(Like.objects.filter(listing_id = Listing.objects.get(id=id)).values_list('liked_by'))
+            if not Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user):
+                new_like = Like()
+                new_like.listing_id = Listing.objects.get(id=id)
+                new_like.liked_by = request.user
+                new_like.save()
+                messages.success(request, "You liked the listing.")
+            else:
+                Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user).delete()
+        return HttpResponseRedirect(reverse('listing', args=[id]))
+        
+
+    try:
+        listings = {"listing": Listing.objects.get(id=id)}
+    except Listing.DoesNotExist:
+        return index(request)
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            print(request.POST)
+            if 'comment' in request.POST:
+                return comment()
+            elif 'like' in request.POST:
+                return like()
         else:
-            msg = "You need to login to enter a comment. Please <a href='/login'>login</a>"
+            messages.warning(request, "You need to login to perform this action. Please <a href='/login'>login</a>")
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(id=id),
         "comment": Comments.objects.filter(view_id=Listing.objects.get(id=id)),
-        "message": msg
+        "likes" : Like.objects.filter(listing_id=id)
     })
+
