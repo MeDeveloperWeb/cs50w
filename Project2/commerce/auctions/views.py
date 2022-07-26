@@ -10,11 +10,12 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib import messages
+from pip import List
 
 import auctions
 
 
-from .models import Comments, Like, Listing, User
+from .models import Bid, Comments, Like, Listing, User, WatchList
 
 
 class CreateListing(forms.ModelForm):
@@ -137,18 +138,47 @@ def listing(request, id):
         return HttpResponseRedirect(reverse('listing', args=[id]))
 
     def like():
-        if 'like' in request.POST:
-            print(Like.objects.filter(listing_id = Listing.objects.get(id=id)).values_list('liked_by'))
-            if not Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user):
-                new_like = Like()
-                new_like.listing_id = Listing.objects.get(id=id)
-                new_like.liked_by = request.user
-                new_like.save()
-                messages.success(request, "You liked the listing.")
-            else:
-                Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user).delete()
+        if not Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user):
+            new_like = Like()
+            new_like.listing_id = Listing.objects.get(id=id)
+            new_like.liked_by = request.user
+            new_like.save()
+            messages.success(request, "You liked the listing.")
+        else:
+            Like.objects.filter(listing_id = Listing.objects.get(id=id), liked_by = request.user).delete()
         return HttpResponseRedirect(reverse('listing', args=[id]))
-        
+
+    def bid(): 
+        amt = float(request.POST['amt'])
+        prev = Bid.objects.filter(listing_id = id)
+        if amt < Listing.objects.get(id=id).price: 
+            messages.warning(request, "Bidding amount must be greater than Original price.")
+            return HttpResponseRedirect(reverse('listing', args=[id]))
+        for bids in prev:
+            if amt <= bids.bid_amt: 
+                messages.warning(request, "Bidding amount must be greater than previous biddings.")
+                return HttpResponseRedirect(reverse('listing', args=[id]))
+        new_bid = Bid()
+        new_bid.bid_amt = amt
+        new_bid.bidder_id = request.user
+        new_bid.listing_id = Listing.objects.get(id=id)
+        new_bid.save()
+        messages.success(request, "Your bid was added successfully.")
+        return HttpResponseRedirect(reverse('listing', args=[id]))
+
+    def watch():
+        try:
+            WatchList.objects.get(watcher = request.user.id, listing_id = id)
+        except WatchList.DoesNotExist:
+            watch = WatchList()
+            watch.listing_id = Listing.objects.get(id=id)
+            watch.watcher = request.user
+            watch.save()
+            messages.success(request, "Listing was added to your wishlist successfully.")
+        else:
+            WatchList.objects.get(watcher = request.user.id, listing_id = id).delete()
+            messages.warning(request, "You removed listing from your wishlist.")
+        return HttpResponseRedirect(reverse('listing', args=[id]))
 
     try:
         listings = {"listing": Listing.objects.get(id=id)}
@@ -157,16 +187,37 @@ def listing(request, id):
 
     if request.method == 'POST':
         if request.user.is_authenticated:
-            print(request.POST)
             if 'comment' in request.POST:
                 return comment()
             elif 'like' in request.POST:
                 return like()
+            elif 'bid' in request.POST:
+                return bid()
+            elif 'watch' in request.POST:
+                return watch() 
         else:
             messages.warning(request, "You need to login to perform this action. Please <a href='/login'>login</a>")
     return render(request, "auctions/listing.html", {
         "listing": Listing.objects.get(id=id),
         "comment": Comments.objects.filter(view_id=Listing.objects.get(id=id)),
-        "likes" : Like.objects.filter(listing_id=id)
+        "likes" : Like.objects.filter(listing_id=id),
+        "bid" : Bid.objects.filter(listing_id=id).order_by('-bid_amt'),
+        "watch": WatchList.objects.filter(watcher = request.user.id, listing_id = id)
     })
+
+
+@login_required(login_url='login')
+def watchlist(request):
+    watch = WatchList.objects.filter(watcher=request.user.id)
+    print(watch)
+    listings = [d.listing_id for d in watch]
+    # for each in watch:
+    #     print("ok")
+    #     print(each.listing_id.title)
+    #     listings.append(Listing.objects.get(id=each.listing_id))
+
+    return render(request, "auctions/watchlist.html", {
+        "listings": listings
+    })
+
 

@@ -23,6 +23,9 @@
                 <li class="nav-item">
                   <a class="nav-link" href="{% url 'create' %}">Create Listng</a>
                 </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'watchlist' %}">Watchlist</a>
+                </li>
               </ul>
               <ul class="navbar-nav ms-lg-auto">
                 {% if user.is_authenticated %}

@@ -1,4 +1,5 @@
 from cProfile import label
+from pyexpat import model
 from time import timezone
 from tkinter import CASCADE
 from unicodedata import category
@@ -27,15 +28,16 @@ class Listing(models.Model):
     created_at = models.DateTimeField(default=timezone.now(), editable=False)
     owner_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="auctioner")
     category_id = models.ForeignKey(Category, on_delete=models.PROTECT, related_name="auctioner")
+    status = models.BooleanField(default=True)
 
     def __str__(self):
         return f"{self.title}"
 
 
 class Bid(models.Model):
-    listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing")
+    listing_id = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listing_bid")
     bidder_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder")
-    bid_amt = models.DecimalField(max_digits=7, decimal_places=2, blank=False)
+    bid_amt = models.DecimalField(max_digits=10, decimal_places=2, blank=False)
 
     def __str__(self):
         return f"{self.bid_amt}"
@@ -54,3 +56,7 @@ class Like(models.Model):
     
     def __str__(self):
         return f"{self.liked_by}"
+
+class WatchList(models.Model):
+    listing_id =  models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="watch_obj")
+    watcher = models.ForeignKey(User, on_delete=models.CASCADE)

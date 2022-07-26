@@ -1,0 +1,52 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+    <h2>Watchlist</h2>
+    <div class="super_container">
+        {% for listing in listings %}       
+        <div class="single_product mt-3">
+            <div class="container-fluid bg-light pro-cont border rounded" style=" background-color: #fff; padding: 11px;">
+                
+                <div class="row mt-md-5" onclick="location.href = '{% url 'listing'  id=listing.id %}'">
+                    <div class="col text-center">
+                        {% if listing.photo %}
+                        <div class="image_selected"><img src="{{listing.photo}}" alt="" class="pro-img border border-success rounded"></div>
+                        {% endif %}
+                    </div>
+                    <div class="{% if not listing.photo %} col-lg-6 p-5 border border-success rounded{% else %} col-lg {% endif %} pro-des mt-lg-0 mt-5 text-left px-3 px-md-5">
+                        <div class="product_description">
+                            <div class="pro-title">
+                                <h4 class="h4-title">{{ listing.title }}</h4>
+                                <hr>
+                            </div>
+                            <div class="pro-details">
+                                <div class="starting-bid mt-5 small"><strong>Starting Bid: </strong>${{listing.price}}</div>
+                                {% with listing.listing_bid.all|dictsortreversed:"bid_amt" as bid %}                                                    
+                                {% if bid|length %}
+                                <div class="current-bid small">
+                                    <strong>Current-bid: </strong><span class="show-price"> ${{bid.0.bid_amt}} </span>
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+                                <hr>
+                                <div class="pro-des my-5"><strong class="h4">Description:</strong> {{listing.details}} </div>
+                                <div class="owner"><strong>Listed by:</strong> {{listing.owner_id}}</div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+                    {% if not listing.photo %}
+                    <div class="col text-center">
+                    </div>
+                    {% endif %}
+                </div>
+                
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+{% endblock %}

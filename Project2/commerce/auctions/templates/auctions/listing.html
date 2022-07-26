@@ -30,7 +30,7 @@
                                 {% endfor %}
                                     </span>
                                 </button>
-                                {{likes|length}} likes and &#128172 {{comment|length}} comments.
+                                {{likes|length}} likes, <a href="#comment" style="text-decoration: none;">&#128172</a> {{comment|length}} comments and <b>$</b> {{bid|length}} bids.
                                 <script async>
                                     var el = document.getElementById('btntxt');
                                     if (!el.children.length) {document.getElementById("btntxt").innerHTML += '<span>&#9825</span>';
@@ -41,17 +41,33 @@
                               </div>
                             <hr>
                             <div class="starting-bid mt-5 small"><strong>Starting Bid: </strong>${{listing.price}}</div>
+                            {% if bid|length %}
                             <div class="current-bid small">
-                                <strong>Current-bid: </strong><span class="show-price">$79.90</span>
+                                <strong>Current-bid: </strong><span class="show-price"> ${{bid.0.bid_amt}} </span>
                             </div>
+                            {% endif %}
                             <hr>
                             <div class="pro-des my-5"><strong class="h4">Description:</strong> {{listing.details}} </div>
                             <div class="owner"><strong>Listed by:</strong> {{listing.owner_id}}</div>
                         </div>
                         <div class="btns">
+                            <div class="init">
+                                <button class="bid-btn" id="bid">Bid Now</button>
+                                <form action="{% url 'listing' listing.id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="bid-btn" type="submit" name="watch" style="background-color:{% if watch|length %}palevioletred{% else %}darkturquoise{% endif %};">
+                                        {% if watch|length %} Remove from Watchlist {% else %} Add to watchlist {% endif %}
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="fin">
+                                <form action="{% url 'listing' listing.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="number" name="amt" step="0.01" placeholder="Enter Amount" required min="{{bid.0.bid_amt}}">
+                                    <input type="submit" value="Bid" name="bid">
+                                </form>
+                            </div>
                             
-                            <button class="bid-btn" id="bid">Bid Now</button>
-                            <button class="bid-btn" id="wish">Add to watchlist</button>
                              
                         </div>
                     </div>
@@ -69,7 +85,7 @@
                 <div class="comment-count h4"> &#128172  {{comment|length}} Comments</div>
                 <hr>
                 <div class="comment-form">
-                    <form action="{% url 'listing' listing.id %}" method="post" autocomplete="off">
+                    <form action="{% url 'listing' listing.id %}" method="post" autocomplete="off" id="comment">
                         <textarea placeholder="Add your Comment" class="comment-input" name="comment_txt" onclick="document.getElementsByClassName('comment-btns')[0].style.display = 'block';"></textarea>
                         {% csrf_token %}
                         <div class="comment-btns">
