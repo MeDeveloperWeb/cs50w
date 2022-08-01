@@ -12,7 +12,11 @@
     <hr>
 
     <div id="emails-view">
+        <div id="emails-view-title"></div>
+        <div id="emails-view-content"></div>
     </div>
+
+    <div id="email-des"></div>
 
     <div id="compose-view">
         <h3>New Email</h3>
@@ -33,5 +37,7 @@
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'mail/inbox.js' %}"></script>
+    <script src="https://unpkg.com/@babel/standalone@7.9.4/babel.min.js"></script>    
+    <script type="text/babel" src="{% static 'mail/inbox.js' %}" async></script>
+<!-- <script src="{% static 'mail/inbox.js' %}"></script> -->
 {% endblock %}
